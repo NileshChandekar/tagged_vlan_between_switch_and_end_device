@@ -251,6 +251,83 @@
 
 # Server Side Configuration 
 
+# Check ip details after vlan configuration on rhel server (7.5)
+
+    ~~~
+    [root@test1020 network-scripts]# ls
+    ifcfg-eth0     ifcfg-eth1.20  ifdown-bnep  ifdown-ipv6  ifdown-ppp     ifdown-Team      ifup          ifup-eth   ifup-isdn   ifup-post    ifup-sit       ifup-tunnel       network-functions
+    ifcfg-eth1     ifcfg-lo       ifdown-eth   ifdown-isdn  ifdown-routes  ifdown-TeamPort  ifup-aliases  ifup-ippp  ifup-plip   ifup-ppp     ifup-Team      ifup-wireless     network-functions-ipv6
+    ifcfg-eth1.10  ifdown         ifdown-ippp  ifdown-post  ifdown-sit     ifdown-tunnel    ifup-bnep     ifup-ipv6  ifup-plusb  ifup-routes  ifup-TeamPort  init.ipv6-global
+    [root@test1020 network-scripts]# 
+    ~~~
+
+## Configure vlan interface ``eth1.10``
+    ~~~
+    [root@test1020 network-scripts]# cat ifcfg-eth1.10
+    TYPE=vlan  <====================================================== Type should be "VLAN"
+    BOOTPROTO=none
+    NAME=eth1.10
+    DEVICE=eth1.10
+    ONBOOT=yes
+    VLAN=yes
+    IPADDR=10.1.1.2
+    PREFIX=24
+    NETWORK=10.1.1.0
+    [root@test1020 network-scripts]#
+    ~~~
+
+## Configure vlan interface ``eth1.20``
+
+    ~~~
+    [root@test1020 network-scripts]# cat ifcfg-eth1.20
+    TYPE=vlan   <====================================================== Type should be "VLAN"
+    BOOTPROTO=none
+    NAME=eth1.20
+    DEVICE=eth1.20
+    ONBOOT=yes
+    VLAN=yes
+    IPADDR=20.20.20.2
+    PREFIX=24
+    NETWORK=20.20.20.0
+    [root@test1020 network-scripts]# 
+    ~~~
+
+## ``ip a`` details 
+
+    ~~~
+    [root@test1020 network-scripts]# ip a
+    1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
+        link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+        inet 127.0.0.1/8 scope host lo
+           valid_lft forever preferred_lft forever
+        inet6 ::1/128 scope host 
+           valid_lft forever preferred_lft forever
+    2: eth0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast state UP group default qlen 1000
+        link/ether 08:00:27:f2:da:83 brd ff:ff:ff:ff:ff:ff
+        inet 10.10.10.20/24 brd 10.10.10.255 scope global noprefixroute eth0
+           valid_lft forever preferred_lft forever
+        inet6 fe80::a00:27ff:fef2:da83/64 scope link 
+           valid_lft forever preferred_lft forever
+    3: eth1: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast state UP group default qlen 1000
+        link/ether 08:00:27:45:69:00 brd ff:ff:ff:ff:ff:ff
+        inet6 fe80::a00:27ff:fe45:6900/64 scope link 
+           valid_lft forever preferred_lft forever
+    5: eth1.20@eth1: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UP group default qlen 1000
+        link/ether 08:00:27:45:69:00 brd ff:ff:ff:ff:ff:ff
+        inet 20.20.20.2/24 brd 20.20.20.255 scope global noprefixroute eth1.20
+           valid_lft forever preferred_lft forever
+        inet6 fe80::a00:27ff:fe45:6900/64 scope link 
+           valid_lft forever preferred_lft forever
+    6: eth1.10@eth1: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UP group default qlen 1000
+        link/ether 08:00:27:45:69:00 brd ff:ff:ff:ff:ff:ff
+        inet 10.1.1.2/24 brd 10.1.1.255 scope global noprefixroute eth1.10
+           valid_lft forever preferred_lft forever
+        inet6 fe80::a00:27ff:fe45:6900/64 scope link 
+           valid_lft forever preferred_lft forever
+    [root@test1020 network-scripts]# 
+    ~~~
+
+
 ## IP and VLAN Configuration 
 
 ![Image ipa](https://github.com/NileshChandekar/tagged_vlan_between_switch_and_end_device/blob/master/ipa.png)
