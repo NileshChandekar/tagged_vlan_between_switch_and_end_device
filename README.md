@@ -249,9 +249,9 @@
     ESW1#
     ~~~
 
-# Server Side Configuration 
+# End Device (redhat nodes)  Configuration 
 
-# Check ip details after vlan configuration on rhel server (7.5)
+## Check ip details after vlan configuration on rhel server (7.5)
 
     ~~~
     [root@test1020 network-scripts]# ls
@@ -326,6 +326,8 @@
            valid_lft forever preferred_lft forever
     [root@test1020 network-scripts]# 
     ~~~
+
+## Follow the above process for redhat node B as well. 
 
 
 ## IP and VLAN Configuration 
