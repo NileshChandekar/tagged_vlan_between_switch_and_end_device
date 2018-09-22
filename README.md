@@ -249,7 +249,16 @@
     ESW1#
     ~~~
 
+# Server Side Configuration 
+
+## IP and VLAN Configuration 
 
 ![Image ipa](https://github.com/NileshChandekar/tagged_vlan_between_switch_and_end_device/blob/master/ipa.png)
+
+## Ping results 
+
 ![Image ping](https://github.com/NileshChandekar/tagged_vlan_between_switch_and_end_device/blob/master/ping.png)
+
+## TCPDUMP from Server B (20.20.20.2)  to Server A (20.20.20.1) to verify 802.1 encapsulation (tagged vlan)
+
 ![Image tcpdump](https://github.com/NileshChandekar/tagged_vlan_between_switch_and_end_device/blob/master/tcpdump.png)
