@@ -102,3 +102,152 @@
     ~~~
 
 
+# Switch side configuration 
+
+
+    ~~~
+    sh ip int br
+    ~~~
+
+    ~~~
+    Interface                  IP-Address      OK? Method Status                Protocol
+    FastEthernet0/0            unassigned      YES NVRAM  administratively down down    
+    FastEthernet1/0            unassigned      YES unset  up                    up      
+    FastEthernet1/1            unassigned      YES unset  up                    up      
+    FastEthernet1/2            unassigned      YES unset  up                    down    
+    FastEthernet1/3            unassigned      YES unset  up                    down    
+    FastEthernet1/4            unassigned      YES unset  up                    down    
+    FastEthernet1/5            unassigned      YES unset  up                    up      
+    FastEthernet1/6            unassigned      YES unset  up                    up      
+    FastEthernet1/7            unassigned      YES unset  up                    up      
+    FastEthernet1/8            unassigned      YES unset  up                    down    
+    FastEthernet1/9            unassigned      YES unset  up                    down    
+    FastEthernet1/10           unassigned      YES unset  up                    up      
+    FastEthernet1/11           unassigned      YES unset  up                    up      
+    FastEthernet1/12           unassigned      YES unset  up                    down    
+    FastEthernet1/13           unassigned      YES unset  up                    down    
+    FastEthernet1/14           unassigned      YES unset  up                    up      
+    FastEthernet1/15           unassigned      YES unset  up                    up      
+    Vlan1                      unassigned      YES NVRAM  administratively down down    
+    ~~~
+
+
+
+## vlan configuration
+
+    ~~~
+    vlan database 
+    vlan 10 name ExternalNetworkVlanID
+    vlan 20 name StorageNetworkVlanID
+    vlan 30 name InternalApiNetworkVlanID
+    vlan 40 name StorageMgmtNetworkVlanID
+    vlan 50 name TenantNetworkVlanID
+    exit
+    wr
+    ~~~
+
+
+## Check details 
+
+
+    ~~~
+    ESW1#sh vlan-switch 
+
+    VLAN Name                             Status    Ports
+    ---- -------------------------------- --------- -------------------------------
+    1    default                          active    Fa1/0, Fa1/1, Fa1/2, Fa1/3
+                                                    Fa1/4, Fa1/5, Fa1/6, Fa1/7
+                                                    Fa1/8, Fa1/9, Fa1/12, Fa1/13
+                                                    Fa1/14, Fa1/15
+    10   ExternalNetworkVlanID            active    
+    20   StorageNetworkVlanID             active    
+    30   InternalApiNetworkVlanID         active    
+    40   StorageMgmtNetworkVlanID         active    
+    50   TenantNetworkVlanID              active    
+    1002 fddi-default                     active    
+    1003 token-ring-default               active    
+    1004 fddinet-default                  active    
+    1005 trnet-default                    active    
+
+    VLAN Type  SAID       MTU   Parent RingNo BridgeNo Stp  BrdgMode Trans1 Trans2
+    ---- ----- ---------- ----- ------ ------ -------- ---- -------- ------ ------
+    1    enet  100001     1500  -      -      -        -    -        1002   1003
+    10   enet  100010     1500  -      -      -        -    -        0      0   
+    20   enet  100020     1500  -      -      -        -    -        0      0   
+    30   enet  100030     1500  -      -      -        -    -        0      0   
+              
+    VLAN Type  SAID       MTU   Parent RingNo BridgeNo Stp  BrdgMode Trans1 Trans2
+    ---- ----- ---------- ----- ------ ------ -------- ---- -------- ------ ------
+    40   enet  100040     1500  -      -      -        -    -        0      0   
+    50   enet  100050     1500  -      -      -        -    -        0      0   
+    1002 fddi  101002     1500  -      -      -        -    -        1      1003
+    1003 tr    101003     1500  1005   0      -        -    srb      1      1002
+    1004 fdnet 101004     1500  -      -      1        ibm  -        0      0   
+    1005 trnet 101005     1500  -      -      1        ibm  -        0      0   
+    ESW1#
+    ~~~
+
+## VTP CONFIGURATION
+
+
+    ~~~
+    vlan database 
+    vtp server 
+    vtp domain OPENSTACKLAB
+    exit
+    wr
+    ~~~
+
+## TRUNK PORT CONFIGURATION FOR VLAN RANGE 10-50 
+
+
+    ~~~
+    configure terminal 
+    interface range fastEthernet 1/10 - 11
+    switchport trunk encapsulation dot1q
+    switchport mode trunk
+    switchport trunk allowed vlan 1-4,10-50,1002-1005
+    exit
+    exit
+    wr
+    ~~~
+
+
+## Check details 
+
+    ~~~
+    ESW1#sh interfaces trunk 
+
+    Port      Mode         Encapsulation  Status        Native vlan
+    Fa1/10    on           802.1q         trunking      1
+    Fa1/11    on           802.1q         trunking      1
+
+    Port      Vlans allowed on trunk
+    Fa1/10    1-4,10-50,1002-1005
+    Fa1/11    1-4,10-50,1002-1005
+
+    Port      Vlans allowed and active in management domain
+    Fa1/10    1,10,20,30,40,50
+    Fa1/11    1,10,20,30,40,50
+
+    Port      Vlans in spanning tree forwarding state and not pruned
+    Fa1/10    1,10,20,30,40,50
+    Fa1/11    1,10,20,30,40,50
+    ESW1#
+    ~~~
+
+
+
+## Trunking 
+
+    ~~~
+    conf t
+    interface range fastEthernet 1/10 - 11
+    switchport mode trunk
+    spanning-tree portfast
+    exit
+    exit
+    wr
+    ~~~
+
+
