@@ -213,6 +213,19 @@
     ~~~
 
 
+## Trunking 
+
+    ~~~
+    conf t
+    interface range fastEthernet 1/10 - 11
+    switchport mode trunk
+    spanning-tree portfast
+    exit
+    exit
+    wr
+    ~~~
+
+	
 ## Check details 
 
     ~~~
@@ -234,20 +247,6 @@
     Fa1/10    1,10,20,30,40,50
     Fa1/11    1,10,20,30,40,50
     ESW1#
-    ~~~
-
-
-
-## Trunking 
-
-    ~~~
-    conf t
-    interface range fastEthernet 1/10 - 11
-    switchport mode trunk
-    spanning-tree portfast
-    exit
-    exit
-    wr
     ~~~
 
 
